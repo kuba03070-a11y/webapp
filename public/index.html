@@ -3,293 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Discord</title>
+    <title>Discord Clone</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Login Screen -->
-    <div id="login-screen">
-        <div class="login-container">
-            <h1><i class="fab fa-discord"></i> Simple Discord</h1>
-            <div class="login-form">
-                <input type="text" id="username" placeholder="Username" required>
-                <input type="password" id="password" placeholder="Password" required>
-                <div class="button-group">
-                    <button id="login-btn">Login</button>
-                    <button id="register-btn">Register</button>
-                </div>
-                <div id="auth-message"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main App -->
-    <div id="app" style="display: none;">
+    <div class="app-container">
         <!-- Server Sidebar -->
-        <div class="sidebar">
-            <div class="server-list" id="server-list"></div>
-            <div class="quick-actions">
-                <button class="action-btn" id="join-server-action">
-                    <i class="fas fa-plus"></i> Join
-                </button>
-                <button class="action-btn" id="create-server-action">
-                    <i class="fas fa-plus"></i> Create
-                </button>
+        <div class="servers-sidebar">
+            <div class="server-list" id="serverList">
+                <!-- Servers will be loaded here -->
+            </div>
+            <button id="createServerBtn" class="server-add-btn">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+
+        <!-- Channels Sidebar -->
+        <div class="channels-sidebar">
+            <div class="current-server" id="currentServer">
+                <h3>Loading...</h3>
+            </div>
+            <div class="channels-list">
+                <h4><i class="fas fa-hashtag"></i> TEXT CHANNELS</h4>
+                <ul id="textChannels">
+                    <!-- Text channels will be loaded here -->
+                </ul>
+                <h4><i class="fas fa-volume-up"></i> VOICE CHANNELS</h4>
+                <ul id="voiceChannels">
+                    <!-- Voice channels will be loaded here -->
+                </ul>
+            </div>
+            <div class="user-profile" id="userProfile">
+                <!-- User profile will be loaded here -->
             </div>
         </div>
 
-        <!-- Channel Sidebar -->
-        <div class="channel-sidebar">
-            <div class="server-header">
-                <h2 id="server-name">Demo Server</h2>
-            </div>
-            
-            <div class="channels">
-                <div class="channel-section">
-                    <div class="channel-section-header">
-                        <h3><i class="fas fa-hashtag"></i> TEXT & ANNOUNCEMENTS</h3>
-                        <button class="add-channel-btn" data-type="text" title="Create Channel">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
-                    <div class="channel-list" id="text-channels"></div>
-                </div>
-                
-                <div class="channel-section">
-                    <div class="channel-section-header">
-                        <h3><i class="fas fa-volume-up"></i> VOICE CHANNELS</h3>
-                        <button class="add-channel-btn" data-type="voice" title="Create Voice Channel">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
-                    <div class="channel-list" id="voice-channels"></div>
-                </div>
-            </div>
-            
-            <div class="user-profile">
-                <div class="user-profile-avatar">
-                    <div class="user-avatar-small" id="user-avatar-small">
-                        <div id="user-avatar-fallback" class="avatar-fallback"></div>
-                    </div>
-                    <div>
-                        <span id="current-username">User</span>
-                        <div style="font-size: 12px; color: #8e9297;">Click avatar to change</div>
-                    </div>
-                </div>
-                <div class="user-info">
-                    <button id="edit-profile-btn"><i class="fas fa-edit"></i> Edit</button>
-                    <button id="logout-btn">Logout</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main Chat -->
+        <!-- Main Chat Area -->
         <div class="main-content">
             <div class="chat-header">
-                <i class="fas fa-hashtag"></i>
-                <span id="current-channel">general</span>
-                <div class="online-users online-users-container">
-                    <i class="fas fa-user-friends"></i>
-                    <span id="online-count">0</span> online
-                    <div class="online-users-popup" id="online-users-popup"></div>
-                </div>
+                <h3 id="currentChannel">#general</h3>
             </div>
-
-            <div class="messages-container" id="messages-container"></div>
-
-            <div class="message-input">
-                <input type="text" id="message-input" placeholder="Type your message here...">
-                <button id="send-btn"><i class="fas fa-paper-plane"></i></button>
+            
+            <div class="chat-messages" id="chatMessages">
+                <!-- Messages will be loaded here -->
+            </div>
+            
+            <div class="chat-input-container">
+                <input type="text" id="messageInput" placeholder="Message #general">
+                <button id="sendMessageBtn"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
 
-        <!-- Voice Panel -->
-        <div class="voice-container" id="voice-container">
-            <h3><i class="fas fa-phone"></i> Voice Channel</h3>
-            <div class="voice-users" id="voice-users"></div>
+        <!-- Voice Chat Panel -->
+        <div class="voice-panel" id="voicePanel" style="display: none;">
+            <div class="voice-header">
+                <h4>Voice Chat</h4>
+                <button id="closeVoiceBtn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="voice-users" id="voiceUsers">
+                <!-- Voice users will appear here -->
+            </div>
             <div class="voice-controls">
-                <button id="mute-btn"><i class="fas fa-microphone"></i> Mute</button>
-                <button id="leave-voice-btn"><i class="fas fa-phone-slash"></i> Leave</button>
+                <button id="micToggleBtn" class="voice-btn"><i class="fas fa-microphone"></i></button>
+                <button id="cameraToggleBtn" class="voice-btn"><i class="fas fa-video"></i></button>
+                <button id="leaveVoiceBtn" class="voice-btn leave-btn"><i class="fas fa-phone-slash"></i></button>
+            </div>
+            <div class="video-container" id="videoContainer">
+                <!-- Video streams will appear here -->
             </div>
         </div>
     </div>
 
     <!-- Modals -->
-    <div id="avatar-modal" class="modal">
+    <div id="loginModal" class="modal">
         <div class="modal-content">
-            <h2><i class="fas fa-user-circle"></i> Change Avatar</h2>
-            <div class="avatar-preview-container">
-                <div class="avatar-preview" id="avatar-preview">
-                    <div id="avatar-fallback" class="avatar-fallback"></div>
-                </div>
-                <label class="avatar-upload-btn">
-                    <input type="file" id="avatar-file-input" accept="image/*" style="display: none;">
-                    <i class="fas fa-upload"></i> Choose Image
-                </label>
-                <small>Max file size: 1MB</small>
+            <h2>Welcome to Discord Clone</h2>
+            <div class="form-group">
+                <input type="text" id="loginUsername" placeholder="Username" required>
             </div>
-            <div class="avatar-controls">
-                <button id="save-avatar-btn">Save Avatar</button>
-                <button id="cancel-avatar-btn">Cancel</button>
+            <div class="form-group">
+                <input type="password" id="loginPassword" placeholder="Password" required>
             </div>
+            <button id="loginBtn">Login</button>
+            <p>Don't have an account? <a href="#" id="showRegister">Register</a></p>
         </div>
     </div>
 
-    <div id="create-server-modal" class="modal">
+    <div id="registerModal" class="modal" style="display: none;">
         <div class="modal-content">
-            <h2><i class="fas fa-plus-circle"></i> Create Server</h2>
-            <input type="text" id="server-name-input" placeholder="Server name" maxlength="100">
-            <div class="modal-buttons">
-                <button id="create-server-btn" class="modal-primary">Create</button>
-                <button id="cancel-create-server-btn" class="modal-secondary">Cancel</button>
+            <h2>Create Account</h2>
+            <div class="form-group">
+                <input type="text" id="regUsername" placeholder="Username" required>
             </div>
+            <div class="form-group">
+                <input type="email" id="regEmail" placeholder="Email" required>
+            </div>
+            <div class="form-group">
+                <input type="password" id="regPassword" placeholder="Password" required>
+            </div>
+            <button id="registerBtn">Register</button>
+            <p>Already have an account? <a href="#" id="showLogin">Login</a></p>
         </div>
     </div>
 
-    <div id="create-channel-modal" class="modal">
+    <div id="createServerModal" class="modal" style="display: none;">
         <div class="modal-content">
-            <h2><i class="fas fa-plus-circle"></i> Create Channel</h2>
-            <input type="text" id="channel-name-input" placeholder="Channel name">
-            <select id="channel-type-select">
-                <option value="text">Text Channel</option>
-                <option value="announcement">Announcement Channel</option>
-                <option value="voice">Voice Channel</option>
-            </select>
-            
-            <div id="channel-settings-fields">
-                <div class="channel-type-settings" id="text-channel-settings" style="display: none;">
-                    <div class="setting-item">
-                        <div class="setting-label">
-                            <strong>Admin Only</strong>
-                            <small>Only admins can send messages</small>
-                        </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="text-admin-only">
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                    <div class="setting-item">
-                        <div class="setting-label">
-                            <strong>Slow Mode</strong>
-                            <small>Delay between messages (seconds)</small>
-                        </div>
-                        <input type="number" id="text-slow-mode" class="number-input" min="0" max="120" value="0">
-                    </div>
-                </div>
-                
-                <div class="channel-type-settings" id="announcement-channel-settings" style="display: none;">
-                    <div class="permission-indicator permission-admin"></div>
-                    <small>Only server owners can post in announcement channels</small>
-                </div>
-                
-                <div class="channel-type-settings" id="voice-channel-settings" style="display: none;">
-                    <div class="setting-item">
-                        <div class="setting-label">
-                            <strong>User Limit</strong>
-                            <small>Maximum users (0 for unlimited)</small>
-                        </div>
-                        <input type="number" id="voice-user-limit" class="number-input" min="0" max="99" value="0">
-                    </div>
-                </div>
+            <h2>Create New Server</h2>
+            <div class="form-group">
+                <input type="text" id="serverName" placeholder="Server Name" required>
             </div>
-            
-            <div class="modal-buttons">
-                <button id="create-channel-btn" class="modal-primary">Create</button>
-                <button id="cancel-create-channel-btn" class="modal-secondary">Cancel</button>
-            </div>
+            <button id="createServerConfirmBtn">Create Server</button>
         </div>
     </div>
 
-    <div id="invite-modal" class="modal">
-        <div class="modal-content invite-content">
-            <h2><i class="fas fa-user-plus"></i> Invite People</h2>
-            <p>Share this invite link to add friends to the server:</p>
-            <div class="invite-code" id="invite-code-display">Loading...</div>
-            <button class="copy-btn" id="copy-invite-btn">
-                <i class="fas fa-copy"></i> Copy Invite
-            </button>
-            <div class="copy-success" id="copy-success">Copied to clipboard!</div>
-            <div class="modal-buttons" style="margin-top: 20px;">
-                <button id="close-invite-btn" class="modal-secondary">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="join-server-modal" class="modal">
-        <div class="modal-content">
-            <h2><i class="fas fa-door-open"></i> Join Server</h2>
-            <input type="text" id="invite-code-input" placeholder="Enter invite code">
-            <div class="modal-buttons">
-                <button id="join-server-btn" class="modal-primary">Join</button>
-                <button id="cancel-join-server-btn" class="modal-secondary">Cancel</button>
-            </div>
-            <div id="join-server-message"></div>
-        </div>
-    </div>
-
-    <div id="channel-settings-modal" class="modal">
-        <div class="modal-content">
-            <h2><i class="fas fa-cog"></i> Channel Settings</h2>
-            <div id="channel-settings-content"></div>
-            <div class="modal-buttons">
-                <button id="save-channel-settings" class="modal-primary">Save Changes</button>
-                <button id="cancel-channel-settings" class="modal-secondary">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="admin-management-modal" class="modal">
-        <div class="modal-content">
-            <h2><i class="fas fa-shield-alt"></i> Server Administration</h2>
-            <div class="admin-panel">
-                <h4>Server Owner</h4>
-                <div class="admin-user owner" id="server-owner-display">
-                    <span>Loading...</span>
-                    <span class="owner-badge">Owner</span>
-                </div>
-                
-                <h4>Administrators</h4>
-                <div class="admin-list" id="admin-list"></div>
-                
-                <div class="add-admin-form">
-                    <input type="text" class="add-admin-input" id="new-admin-input" placeholder="Username to make admin">
-                    <button id="add-admin-btn" class="modal-primary">Add Admin</button>
-                </div>
-            </div>
-            <div class="modal-buttons">
-                <button id="close-admin-modal" class="modal-secondary">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Templates -->
-    <template id="server-menu-template">
-        <div class="server-menu">
-            <div class="menu-item invite-server-btn">
-                <i class="fas fa-user-plus"></i> Invite People
-            </div>
-            <div class="menu-item admin-management-btn">
-                <i class="fas fa-shield-alt"></i> Admin Panel
-            </div>
-            <div class="menu-item leave-server-btn">
-                <i class="fas fa-sign-out-alt"></i> Leave Server
-            </div>
-        </div>
-    </template>
-
-    <template id="channel-context-menu-template">
-        <div class="channel-context-menu">
-            <div class="channel-context-item edit-channel-btn">
-                <i class="fas fa-cog"></i> Settings
-            </div>
-            <div class="channel-context-item delete-channel-btn danger">
-                <i class="fas fa-trash"></i> Delete Channel
-            </div>
-        </div>
-    </template>
-
-    <!-- Scripts -->
     <script src="/socket.io/socket.io.js"></script>
     <script src="app.js"></script>
 </body>
