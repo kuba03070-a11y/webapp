@@ -1,7 +1,7 @@
 {
-  "name": "discord-simple",
+  "name": "discord-clone",
   "version": "1.0.0",
-  "description": "Simplified Discord clone with voice, text, avatars, invites, and admin features",
+  "description": "A simplified Discord clone with voice, video, and persistent storage",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -9,10 +9,11 @@
   },
   "dependencies": {
     "express": "^4.18.2",
-    "socket.io": "^4.5.4",
-    "bcryptjs": "^2.4.3"
+    "socket.io": "^4.7.2",
+    "sqlite3": "^5.1.6",
+    "multer": "^1.4.5-lts.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.20"
+    "nodemon": "^3.0.1"
   }
 }
